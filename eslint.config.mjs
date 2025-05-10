@@ -17,7 +17,7 @@ export default antfu({
     "no-console": ["warn"],
     "antfu/no-top-level-await": ["off"],
     "node/prefer-global/process": ["off"],
-    "node/no-process-env": ["error"],
+    "node/no-process-env": ["off"],
     "perfectionist/sort-imports": ["error", {
       tsconfigRootDir: ".",
     }],
