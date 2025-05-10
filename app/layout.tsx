@@ -1,16 +1,29 @@
 import type { Metadata } from "next";
 
-import { Geist } from "next/font/google";
+import { DM_Sans, Inter, Poppins } from "next/font/google";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+const inter = Inter({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+const geistSans = DM_Sans({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "whisphra",
+  title: "whispra",
   description: "Whisphra is a web app to chat with your friends",
   icons: {
     icon: "/favicon.ico",
@@ -25,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} antialiased`}
+        className={`${poppins.className} ${inter.variable} ${geistSans.variable} antialiased`}
       >
         {children}
       </body>

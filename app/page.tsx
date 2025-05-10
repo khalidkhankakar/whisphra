@@ -1,9 +1,10 @@
+import Image from "next/image";
 import React from "react";
 
 function HomePage() {
   return (
     <div>
-      HomePage
+      <h1>Home Page</h1>
     </div>
   );
 }
