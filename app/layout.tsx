@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { Geist} from "next/font/google";
+
+import { Geist } from "next/font/google";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
   description: "Whisphra is a web app to chat with your friends",
   icons: {
     icon: "/favicon.ico",
-  }
+  },
 };
 
 export default function RootLayout({
