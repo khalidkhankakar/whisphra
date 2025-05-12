@@ -1,11 +1,9 @@
-import React from "react";
+import AuthForm from "../_components/auth-form";
 
-function Login() {
+export default function Register() {
   return (
-    <div>
-      Login
+    <div className="flex flex-col items-center justify-center min-h-screen gap-2">
+      <AuthForm fromType="LOGIN" />
     </div>
   );
 }
-
-export default Login;
