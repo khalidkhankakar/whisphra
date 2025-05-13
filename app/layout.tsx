@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Inter, Poppins } from "next/font/google";
 
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const poppins = Poppins({
   variable: "--font-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
         className={`${poppins.className} ${inter.variable} ${geistSans.variable} antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

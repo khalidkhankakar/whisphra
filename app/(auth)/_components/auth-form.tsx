@@ -7,6 +7,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { startTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { createUser } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
@@ -45,13 +46,18 @@ function AuthForm({ fromType }: Props) {
     const { email, password } = values;
     if (fromType === "REGISTER") {
       const res = await createUser(values);
-      console.log(res);
+      if (res.success) {
+        toast.success(res.message);
+      }
+      else {
+        toast.error(res.message);
+      }
     }
 
     else {
       startTransition(() => {
-        console.log({ email, password });
-        signIn("credentials", { email, password });
+        const res = signIn("credentials", { email, password });
+        console.log({ signRes: res });
       });
     }
   }

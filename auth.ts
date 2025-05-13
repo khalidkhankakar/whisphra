@@ -28,8 +28,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!passwordMatch)
           return null;
 
-        if (!user.emailVerified)
-          return null;
         // Return the user object that satisfies NextAuth's User type
         return {
           id: user.id as string,
