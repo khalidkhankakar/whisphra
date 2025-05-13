@@ -3,12 +3,13 @@
 import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createUser, signInWithCreditionals } from "@/actions/auth.actions";
+import { createUser } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,7 +22,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { loginDefaultValues, registerDefaultValues } from "@/lib/constant";
-import { loginSchema, registerSchema } from "@/lib/validations";
+import { loginSchema, registerSchema } from "@/modules/auth/schema";
+import { useTRPC } from "@/trpc/client";
 
 import SocialLogin from "./social-login";
 
@@ -41,6 +43,16 @@ function AuthForm({ fromType }: Props) {
   });
 
   const router = useRouter();
+  const trpc = useTRPC();
+  const mutate = useMutation(trpc.auth.signInWithCreditionals.mutationOptions({
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: () => {
+      toast.success("Login successful");
+      router.push("/");
+    },
+  }));
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -57,14 +69,7 @@ function AuthForm({ fromType }: Props) {
 
     else {
       // signIn by server actions
-      const res = await signInWithCreditionals({ email, password });
-      if (res.success) {
-        toast.success(res.message);
-        router.push("/");
-      }
-      else {
-        toast.error(res.message);
-      }
+      mutate.mutate({ email, password });
     }
   }
 

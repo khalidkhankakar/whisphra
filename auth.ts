@@ -4,9 +4,10 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 
+import { loginSchema } from "@/modules/auth/schema";
+
 import { db } from "./drizzle/db";
 import { usersTable } from "./drizzle/models";
-import { loginSchema } from "./lib/validations";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -42,6 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async signIn({ user, account }) {
+      console.log("HELLO_IAM_HERE");
       try {
         const provider = account?.provider;
 

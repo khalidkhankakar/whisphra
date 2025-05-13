@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { signIn } from "@/auth";
 import { db } from "@/drizzle/db";
 import { usersTable } from "@/drizzle/models";
-import { registerSchema } from "@/lib/validations";
+import { registerSchema } from "@/modules/auth/schema";
 
 export async function registerWithGoogle() {
   await signIn("google", { redirectTo: "/" });

@@ -6,6 +6,7 @@ import "./globals.css";
 
 import AuthProvider from "@/components/shared/auth-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TRPCReactProvider } from "@/trpc/client";
 
 const poppins = Poppins({
   variable: "--font-sans",
@@ -39,15 +40,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <AuthProvider>
-        <body
-          className={`${poppins.className} ${inter.variable} ${geistSans.variable} antialiased`}
-        >
-          {children}
-          <Toaster />
-        </body>
-      </AuthProvider>
-    </html>
+    <TRPCReactProvider>
+      <html lang="en">
+        <AuthProvider>
+          <body
+            className={`${poppins.className} ${inter.variable} ${geistSans.variable} antialiased`}
+          >
+            {children}
+            <Toaster />
+          </body>
+        </AuthProvider>
+      </html>
+    </TRPCReactProvider>
   );
 }
