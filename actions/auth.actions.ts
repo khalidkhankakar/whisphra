@@ -12,6 +12,21 @@ export async function registerWithGoogle() {
   await signIn("google", { redirectTo: "/" });
 }
 
+export async function signInWithCreditionals({ email, password }: { email: string; password: string }) {
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    return { success: true, message: "Login successful" };
+  }
+  catch (error) {
+    console.log({ error });
+    return { success: false, message: "Invalid credentials" };
+  }
+}
+
 export async function createUser(data) {
   const isValid = registerSchema.safeParse(data);
   if (!isValid.success) {

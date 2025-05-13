@@ -14,26 +14,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         const validFields = loginSchema.safeParse(credentials);
         if (!validFields.success)
-          return null;
+          throw new Error("Invalid fields");
 
         const { email, password } = validFields.data;
 
-        // Find user by email
         const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
-        if (!user || !user?.password)
-          return null;
+        if (!user || !user.password)
+          throw new Error("User not found");
 
-        // Compare passwords
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch)
-          return null;
+          throw new Error("Incorrect password");
 
-        // Return the user object that satisfies NextAuth's User type
         return {
-          id: user.id as string,
-          name: user.name as string,
-          email: user.email as string,
-          image: user.image ? (user.image as string) : "",
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image || "",
         };
       },
     }),
@@ -44,48 +41,75 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user }) {
-      let userExists;
-      console.log({ user });
-      if (user?.email) {
-        [userExists] = await db.select().from(usersTable).where(eq(usersTable.email, user.email));
-        if (userExists)
-          return false;
-      }
-      if (
-        !userExists && user?.email && user?.name && user?.image && user?.id
-      ) {
-        console.log("here");
-        // create the user in the database
-        const response = await db
-          .insert(usersTable)
-          .values({
-            provider: "google",
-            providerAccountId: user.id,
-            name: user.name,
-            email: user.email,
-            emailVerified: new Date(),
-            id: user.id,
-            image: user.image,
-          })
-          .returning();
-        if (!response)
-          return false;
-        return true;
-      }
+    async signIn({ user, account }) {
+      try {
+        const provider = account?.provider;
 
-      if (
-        userExists?.provider === "credentials"
-        && !userExists?.emailVerified
-      ) {
-        // TODO: send email
+        if (!user?.email)
+          return false;
+
+        const [existingUser] = await db
+          .select()
+          .from(usersTable)
+          .where(eq(usersTable.email, user.email));
+
+        // 🔹 CASE 1: Google Sign-in
+        if (provider === "google") {
+          if (existingUser) {
+            // If user exists with a different provider, prevent conflict
+            if (existingUser.provider !== "google") {
+              console.warn("Email already registered with different provider.");
+              return false;
+            }
+            return true; // login
+          }
+
+          // Create new Google user
+          const response = await db
+            .insert(usersTable)
+            .values({
+              provider: "google",
+              providerAccountId: user.id || "",
+              name: user.name || "",
+              email: user.email || "",
+              emailVerified: new Date(),
+              id: user.id, // or generate your own ID
+              image: user.image || "",
+            })
+            .returning();
+
+          if (!response)
+            return false;
+
+          return true;
+        }
+
+        // 🔹 CASE 2: Credentials Sign-in
+        if (provider === "credentials") {
+          if (!existingUser) {
+            console.warn("Credentials user not found.");
+            return false;
+          }
+
+          // If email not verified, block login
+          // if (!existingUser.emailVerified) {
+          //   // TODO: send verification email
+          //   console.warn("Email not verified.");
+          //   return false;
+          // }
+
+          return true;
+        }
+
         return false;
       }
-
-      return true;
+      catch (error) {
+        console.error("signIn error:", error);
+        return false;
+      }
     },
 
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account }) {
       // console.log("JWT THIRD");
 
       // If user signs in for the first time
