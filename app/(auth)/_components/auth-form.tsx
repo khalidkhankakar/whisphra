@@ -3,13 +3,12 @@
 import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { startTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createUser } from "@/actions/auth.actions";
+import { createUser, signInWithCreditionals } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -41,6 +40,8 @@ function AuthForm({ fromType }: Props) {
     defaultValues,
   });
 
+  const router = useRouter();
+
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { email, password } = values;
@@ -55,10 +56,15 @@ function AuthForm({ fromType }: Props) {
     }
 
     else {
-      startTransition(() => {
-        const res = signIn("credentials", { email, password });
-        console.log({ signRes: res });
-      });
+      // signIn by server actions
+      const res = await signInWithCreditionals({ email, password });
+      if (res.success) {
+        toast.success(res.message);
+        router.push("/");
+      }
+      else {
+        toast.error(res.message);
+      }
     }
   }
 

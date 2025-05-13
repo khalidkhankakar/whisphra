@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { DM_Sans, Inter, Poppins } from "next/font/google";
 
 import "./globals.css";
+
+import AuthProvider from "@/components/shared/auth-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 const poppins = Poppins({
@@ -38,12 +40,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${poppins.className} ${inter.variable} ${geistSans.variable} antialiased`}
-      >
-        {children}
-        <Toaster />
-      </body>
+      <AuthProvider>
+        <body
+          className={`${poppins.className} ${inter.variable} ${geistSans.variable} antialiased`}
+        >
+          {children}
+          <Toaster />
+        </body>
+      </AuthProvider>
     </html>
   );
 }
