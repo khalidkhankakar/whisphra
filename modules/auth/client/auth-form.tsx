@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createUser } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -44,7 +43,18 @@ function AuthForm({ fromType }: Props) {
 
   const router = useRouter();
   const trpc = useTRPC();
-  const mutate = useMutation(trpc.auth.signInWithCreditionals.mutationOptions({
+
+  const createUserMutation = useMutation(trpc.auth.createUser.mutationOptions({
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (success) => {
+      toast.success(success.message);
+      router.push("/");
+    },
+  }));
+
+  const signInMutate = useMutation(trpc.auth.signInWithCreditionals.mutationOptions({
     onError: (error) => {
       toast.error(error.message);
     },
@@ -54,22 +64,16 @@ function AuthForm({ fromType }: Props) {
     },
   }));
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { email, password } = values;
     if (fromType === "REGISTER") {
-      const res = await createUser(values);
-      if (res.success) {
-        toast.success(res.message);
-      }
-      else {
-        toast.error(res.message);
-      }
+      const registerValues = values as z.infer<typeof registerSchema>;
+      createUserMutation.mutate(registerValues);
     }
 
     else {
+      const { email, password } = values;
       // signIn by server actions
-      mutate.mutate({ email, password });
+      signInMutate.mutate({ email, password });
     }
   }
 
@@ -142,7 +146,7 @@ function AuthForm({ fromType }: Props) {
               )}
             />
           )}
-          <Button className="w-full" type="submit">{fromType === "REGISTER" ? "Register" : "Login"}</Button>
+          <Button disabled={fromType === "REGISTER" ? createUserMutation.isPending : signInMutate.isPending} className="cusor-pointer w-full" type="submit">{fromType === "REGISTER" ? createUserMutation.isPending ? "Registering..." : "Register" : signInMutate.isPending ? "Logging in..." : "Login"}</Button>
         </form>
       </Form>
       <Separator className="my-2 !w-1/2 !border-[0.1px] border-gray-500" />

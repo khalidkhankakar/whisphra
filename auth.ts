@@ -43,7 +43,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async signIn({ user, account }) {
-      console.log("HELLO_IAM_HERE");
       try {
         const provider = account?.provider;
 
@@ -112,11 +111,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async jwt({ token, user, account }) {
-      // console.log("JWT THIRD");
-
       // If user signs in for the first time
       if (account) {
-        // console.log({ account, profile, user });
         token.id = user.id;
         token.accessToken = account.access_token;
       }
@@ -125,10 +121,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }) {
-      // console.log("SESSION TWO");
-
-      session.accessToken = token.accessToken;
-      session.user.id = token.id;
+      session.accessToken = token.accessToken as string;
+      session.user.id = token.id as string;
 
       return session;
     },

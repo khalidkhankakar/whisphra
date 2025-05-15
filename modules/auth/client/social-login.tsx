@@ -17,7 +17,7 @@ function SocialLogin() {
           height={20}
           alt="google"
         />
-        <span>Signin with Google</span>
+        <span>SignIn with Google</span>
       </Button>
     </form>
   );
