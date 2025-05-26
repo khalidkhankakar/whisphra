@@ -6,7 +6,7 @@ import Hint from "@/components/shared/hint";
 function MiniSidebar() {
   // TODO onclick to change the type of sidebar
   return (
-    <div className="h-full py-3  flex items-center flex-col border-r-2 bg-gray-200 w-[70px] ">
+    <div className="h-full py-3 hidden lg:flex items-center flex-col border-r-2 bg-gray-200 w-[70px] ">
       <div className=" flex-1 space-y-3">
         <Hint label="Chats" side="right">
           <div className="hover:bg-slate-300 p-2 rounded-full">
