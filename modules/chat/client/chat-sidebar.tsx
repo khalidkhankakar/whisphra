@@ -1,7 +1,33 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
+'use client'
+import UserList from "@/modules/user/client/user-list";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 function ChatSidebar() {
+  const pathname = usePathname();
+
+  // also hide only mobile devices 
+
+  // Hide sidebar on mobile devices (width < 768px) when on /chat/ route
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (pathname.startsWith('/chat/') && window.innerWidth < 768) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [pathname]);
+
+  const [hidden, setHidden] = React.useState(false);
+  if (hidden) {
+    return null;
+  }
+
   return (
     <div className="h-full pb-4 flex flex-col relative md:w-[350px] bg-slate-300 w-full lg:w-[400px]">
 
@@ -16,20 +42,10 @@ function ChatSidebar() {
         </div>
       </div>
 
-      <div className="flex-1 px-3 border border-red-300 py-4 flex flex-col gap-y-2 min-h-0 pb-[88px] overflow-y-auto">
-        {/* <div className=""> */}
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-          <h1 className="text-xl font-bold tracking-wide bg-slate-400 rounded-2xl p-3 font-serif ">Chats</h1>
-        {/* </div> */}
+      <div className="flex-1 px-3 py-4 flex flex-col gap-y-2 min-h-0 pb-[88px] overflow-y-auto">
+
+        <UserList />
+
       </div>
     </div>
   );
