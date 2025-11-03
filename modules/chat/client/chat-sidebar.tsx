@@ -1,29 +1,32 @@
-'use client'
-import UserList from "@/modules/user/client/user-list";
+/* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
+"use client";
 import { usePathname } from "next/navigation";
 import React from "react";
+
+import UserList from "@/modules/user/client/user-list";
 
 function ChatSidebar() {
   const pathname = usePathname();
 
-  // also hide only mobile devices 
+  const [hidden, setHidden] = React.useState(false);
+  // also hide only mobile devices
 
   // Hide sidebar on mobile devices (width < 768px) when on /chat/ route
   React.useEffect(() => {
     const handleResize = () => {
-      if (pathname.startsWith('/chat/') && window.innerWidth < 768) {
+      if (pathname.startsWith("/chat/") && window.innerWidth < 768) {
         setHidden(true);
-      } else {
+      }
+      else {
         setHidden(false);
       }
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [pathname]);
 
-  const [hidden, setHidden] = React.useState(false);
   if (hidden) {
     return null;
   }

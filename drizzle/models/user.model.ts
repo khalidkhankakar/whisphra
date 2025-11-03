@@ -15,7 +15,6 @@ const usersTable = pgTable("users", {
 
 // Write the code for relationship
 
-
 export type UserType = typeof usersTable.$inferSelect;
 
 export default usersTable;

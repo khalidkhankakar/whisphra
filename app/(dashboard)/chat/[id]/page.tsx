@@ -1,18 +1,19 @@
-import React from 'react'
+import React from "react";
 
 type Props = {
-    params: Promise<{ id: string }>
-}
+  params: Promise<{ id: string }>;
+};
 
 async function page({ params }: Props) {
+  const { id } = await params;
 
-    const { id } = await params;
-
-    return (
-        <div className="h-full w-full flex items-center justify-center">
-            user chat {id}
-        </div>
-    )
+  return (
+    <div className="h-full w-full flex items-center justify-center">
+      user chat
+      {" "}
+      {id}
+    </div>
+  );
 }
 
-export default page
+export default page;
