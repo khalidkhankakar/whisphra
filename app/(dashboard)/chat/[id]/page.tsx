@@ -1,10 +1,10 @@
 import React from 'react'
 
-interface Props {
+type Props = {
     params: Promise<{ id: string }>
 }
 
-const page = async ({ params }: Props) => {
+async function page({ params }: Props) {
 
     const { id } = await params;
 
