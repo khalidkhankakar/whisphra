@@ -11,6 +11,8 @@ import UserChatCard from "./user-chat-cart";
 function UserList() {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.user.getAllUsers.queryOptions());
+
+
   return (
     <div className="flex flex-col gap-y-2">
 

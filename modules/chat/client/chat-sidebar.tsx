@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 "use client";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
-import UserList from "@/modules/user/client/user-list";
+import UserList, { UserListSkeleton } from "@/modules/user/client/user-list";
 
 function ChatSidebar() {
   const pathname = usePathname();
@@ -46,9 +46,9 @@ function ChatSidebar() {
       </div>
 
       <div className="flex-1 px-3 py-4 flex flex-col gap-y-2 min-h-0 pb-[88px] overflow-y-auto">
-
-        <UserList />
-
+        <Suspense fallback={<UserListSkeleton />}>
+          <UserList />
+        </Suspense>
       </div>
     </div>
   );
